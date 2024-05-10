@@ -2,7 +2,7 @@
 READ ME
     Data stored in format --> 977834,Asim Santos,asimsantos@gmail.com,mypassword
 
-    To use the functions from this class:
+    To use the functions from this class::
         # Import this the Database class from the database.py file
         from database import Database
         # Create an instance of the class
