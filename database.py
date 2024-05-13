@@ -45,16 +45,24 @@ class Database:
             open(self.filename, 'w').close() 
     
     # Adds a new student to the database with a unique six-digit ID
-    def add_student(self, email, password, full_name):
-        students = self.get_all_students()
-        existing_ids = {student['id'] for student in students}
-        while True:
-            random_id = Utils.generate_random_id()
-            if random_id not in existing_ids:
-                student_id = random_id
-                break
+    # changed by ashraf    
+    def add_student(self, studentID, name, password, email):
         with open(self.filename, 'a') as file:
-            file.write(f"{student_id},{full_name},{email},{password},\n")
+            file.write(f"{studentID},P{name},{password},{email},\n")
+        print("Student data added to Database")
+
+    # def add_student(self, email, password, full_name):
+        # students = self.get_all_students() 
+        # existing_ids = {student['id'] for student in students}
+        # while True:
+        #     random_id = Utils.generate_random_id()
+        #     if random_id not in existing_ids:
+        #         student_id = random_id
+        #         break
+        # with open(self.filename, 'a') as file:
+        #     file.write(f"{student_id},{full_name},{email},{password},\n")
+    # changed by ashraf  
+
 
     # Gets all students in the database.
     # def get_all_students(self):
@@ -77,8 +85,8 @@ class Database:
                 student = {
                     'id': parts[0],
                     'name': parts[1],
-                    'email': parts[2],
-                    'password': parts[3],
+                    'password': parts[2],
+                    'email': parts[3],
                     'subjects': dict(item.split(':') for item in parts[4].split(';') if item)
                 }
                 students.append(student)
@@ -92,17 +100,37 @@ class Database:
                 return student
         return None
 
-    # Updates an existing student's password.
-    def add_student(self, email, password, full_name):
-        students = self.get_all_students()
-        existing_ids = {student['id'] for student in students}
-        while True:
-            random_id = Utils.generate_random_id()
-            if random_id not in existing_ids:
-                student_id = random_id
+    # changed by ashraf  
+    def update_student(self, studentID, new_name, new_password, new_email):
+        with open(self.filename, 'r') as file:
+            lines = file.readlines()
+        for i, line in enumerate(lines):
+            if line.startswith(f'P{studentID},'):
+                student_data = line.strip().split(',')
+                student_data[1] = new_name
+                student_data[2] = new_email
+                student_data[3] = new_password
+                updated_line = f"P{studentID},{','.join(student_data[1:])},\n"
+                lines[i] = updated_line
                 break
-        with open(self.filename, 'a') as file:
-            file.write(f"{student_id},{full_name},{email},{password},\n")
+        else:
+            print(f"Student with ID {studentID} not found.")
+        with open(self.filename, 'w') as file:
+            file.writelines(lines)
+        print("Student data updated in the database")
+
+    # Updates an existing student's password.
+    # def add_student(self, email, password, full_name): # need to check
+    #     students = self.get_all_students()
+    #     existing_ids = {student['id'] for student in students}
+    #     while True:
+    #         random_id = Utils.generate_random_id()
+    #         if random_id not in existing_ids:
+    #             student_id = random_id
+    #             break
+    #     with open(self.filename, 'a') as file:
+    #         file.write(f"{student_id},{full_name},{email},{password},\n")
+    # changed by ashraf  
 
     # Deletes a student from the database.
     def delete_student(self, student_id):
@@ -159,11 +187,12 @@ class Database:
                 self.write_student(file, student)
         return updated
 
+    # changed by ashraf
     # Helper function to write into the student.data in a uniform layout
-    def write_student(self, file, student):
-        subjects_str = ';'.join(f"{key}:{value}" for key, value in student['subjects'].items())
-        file.write(f"{student['id']},{student['name']},{student['email']},{student['password']},{subjects_str}\n")
-
+    # def write_student(self, file, student):
+    #     subjects_str = ';'.join(f"{key}:{value}" for key, value in student['subjects'].items())
+    #     file.write(f"{student['id']},{student['name']},{student['password']},{student['email']},{subjects_str}\n")
+    # changed by ashraf
 
 # Testing
 db = Database()
