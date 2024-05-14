@@ -171,7 +171,7 @@ db = Database()
 # db.add_student('asimsantos@gmail.com', 'mypass', 'Asim Santos')
 # db.add_student('teststu@gmail.com', 'testpass', 'Test Student')
 
-# db.update_password('853160', 'testpass2')
+db.update_password('110571', 'asimsantos')
 
 # db.delete_student('861984')
 
@@ -188,6 +188,15 @@ db = Database()
 # print(db.get_subjects('110571')) 
 # db.remove_subject('110571','501')
 # print(db.get_subjects('110571')) 
+
+# students = db.get_all_students()
+# subject_id = '501'
+# for student in students:
+#     subjects = student['subjects']
+#     if subject_id in subjects:
+#         subject_name = subjects[subject_id]
+
+# print(subject_name)
 
 
 """ 
