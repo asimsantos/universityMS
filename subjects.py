@@ -1,3 +1,5 @@
+FILE_PATH = '/Users/simran/Desktop/FSD/universityMS/students.data'  
+
 courses = {
     '702': 'Math',
     '305': 'English',
@@ -13,14 +15,12 @@ def display_courses():
 
 def read_students_data():
     students = []
-    with open('students.data', 'r') as file:
+    with open(FILE_PATH, 'r') as file:
         lines = file.readlines()
         for line_number, line in enumerate(lines, 1):
-            print(f"Debug - Line {line_number}: '{line.strip()}'")  
             parts = line.strip().split(',', 4)  
             if len(parts) < 4:
-                print(f"Warning - Malformed line {line_number}: '{line.strip()}'")  
-                continue 
+                continue  
             student_id, name, email, password = parts[:4]
             subjects = {}
             if len(parts) == 5 and parts[4]:
@@ -63,7 +63,7 @@ def enroll_in_course(student_id, subjects):
 
 def update_students_data(student_id, subjects):
     students = read_students_data()
-    with open('students.data', 'w') as file:
+    with open(FILE_PATH, 'w') as file:
         for student in students:
             if student['id'] == student_id:
                 subjects_str = ';'.join(f"{k}:{v}" for k, v in subjects.items())
