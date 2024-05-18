@@ -1,97 +1,55 @@
-FILE_PATH = '/Users/simran/Desktop/FSD/universityMS/students.data'  
+import random
+from database import Database
 
-courses = {
-    '702': 'Math',
-    '305': 'English',
-    '401': 'Science',
-    '390': 'Economics',
-    '540': 'Political Science'
-}
+class Subjects:
 
-def display_courses():
-    print("Available Courses:")
-    for code, description in courses.items():
-        print(f"{code}: {description}")
+    def __init__(self):
+        self.db = Database()
+        self.subjects = [
+                {'id': '702', 'name': 'Math'},
+                {'id': '305', 'name': 'AI/ML'},
+                {'id': '401', 'name': 'Science'},
+                {'id': '390', 'name': 'Computer'},
+                {'id': '540', 'name': 'History'},
+                {'id': '745', 'name': 'Programming'}
+            ]
 
-def read_students_data():
-    students = []
-    with open(FILE_PATH, 'r') as file:
-        lines = file.readlines()
-        for line_number, line in enumerate(lines, 1):
-            parts = line.strip().split(',', 4)  
-            if len(parts) < 4:
-                continue  
-            student_id, name, email, password = parts[:4]
-            subjects = {}
-            if len(parts) == 5 and parts[4]:
-                subject_parts = parts[4].split(';')
-                for subject in subject_parts:
-                    if subject:
-                        subj_id, subj_name = subject.split(':')
-                        subjects[subj_id] = subj_name
-            students.append({
-                'id': student_id,
-                'name': name,
-                'email': email,
-                'password': password,
-                'subjects': subjects
-            })
-    return students
+    def display_subjects(self):
+        print("Available Courses:")
+        for subject in self.subjects:
+            print(f"ID: {subject['id']}, Name: {subject['name']}")
 
-def find_student(student_id):
-    students = read_students_data()
-    for student in students:
-        if student['id'] == student_id:
-            return student
-    return None
 
-def enroll_in_course(student_id, subjects):
-    print("Current Subjects: ", subjects)
-    if len(subjects) >= 4:
-        print("You have already enrolled in the maximum number of courses (4).")
-        return
-    display_courses()
-    choice = input("Enter the course code to enroll in: ").strip()
-    if choice == 'done':
-        return
-    if choice in courses and choice not in subjects:
-        subjects[choice] = courses[choice]
-        update_students_data(student_id, subjects)
-        print("Enrolled in new course successfully.")
-    else:
-        print("Invalid course code or already enrolled.")
+    def enroll_subject(self, student_id):
+        enrolled_subjects = self.db.get_subjects(student_id)
+        if enrolled_subjects and len(enrolled_subjects) >= 4:
+            print("Cannot enroll more than 4 subjects.")
+            return False
 
-def update_students_data(student_id, subjects):
-    students = read_students_data()
-    with open(FILE_PATH, 'w') as file:
-        for student in students:
-            if student['id'] == student_id:
-                subjects_str = ';'.join(f"{k}:{v}" for k, v in subjects.items())
-                line = f"{student['id']},{student['name']},{student['email']},{student['password']},{subjects_str}\n"
-            else:
-                subjects_str = ';'.join(f"{k}:{v}" for k, v in student['subjects'].items())
-                line = f"{student['id']},{student['name']},{student['email']},{student['password']},{subjects_str}\n"
-            file.write(line)
+        available_courses = [subject for subject in self.subjects if subject['id'] not in enrolled_subjects]
 
-def main():
-    student_id = input("Please enter your student ID: ").strip()
-    student = find_student(student_id)
-    if student:
-        print(f"Student found: ID={student['id']}, Name={student['name']}")
-        while True:
-            action = input("Choose an action: Enroll (e), Show Subjects (s), Exit (x): ").lower()
-            if action == 'e':
-                enroll_in_course(student['id'], student['subjects'])
-            elif action == 's':
-                print("Enrolled Subjects:")
-                for code, name in student['subjects'].items():
-                    print(f"{code}: {name}")
-            elif action == 'x':
-                break
-            else:
-                print("Invalid action. Please choose again.")
-    else:
-        print("Student not found. Please ensure the ID is correct and try again.")
+        subject_to_enroll = random.choice(available_courses)
+        self.db.set_subjects(student_id, subject_to_enroll['id'], subject_to_enroll['name'], random.randint(0, 100))
+        print(f"Enrolled in {subject_to_enroll['name']}.")
+        return True
 
-if __name__ == "__main__":
-    main()
+    def drop_subject(self, student_id, subject_id):
+        enrolled_subjects = self.db.get_subjects(student_id)
+        if subject_id in enrolled_subjects:
+            self.db.remove_subject(student_id, subject_id)
+            print(f"Dropped subject with ID {subject_id}.")
+            return True
+        else:
+            print("Subject not found or already dropped.")
+            return False
+        
+
+# Testing
+sub = Subjects()
+
+# sub.display_subjects()
+
+# sub.enroll_subject('110571')
+
+# sub.drop_subject('110571', '540')
+
