@@ -88,7 +88,7 @@ class Database:
                     'name': parts[1],
                     'email': parts[2],
                     'password': parts[3],
-                    'subjects': dict(item.split(':') for item in parts[4].split(';') if item)
+                    'subjects': {item.split(':')[0]: {'name': item.split(':')[1], 'marks': int(item.split(':')[2])} for item in parts[4].split(';') if item}
                 }
                 students.append(student)
         return students
@@ -133,13 +133,13 @@ class Database:
         return updated
                     
     # Adds subjects to the student's records
-    def set_subjects(self, student_id, subject_id, subject_name):
+    def set_subjects(self, student_id, subject_id, subject_name, marks):
         students = self.get_all_students()
         updated = False
         with open(self.filename, 'w') as file:
             for student in students:
                 if student['id'] == student_id:
-                    student['subjects'][subject_id] = subject_name
+                    student['subjects'][subject_id] = {'name': subject_name, 'marks': marks}
                     updated = True
                 self.write_student(file, student)
         return updated
@@ -163,7 +163,7 @@ class Database:
 
     # Helper function to write into the student.data in a uniform layout
     def write_student(self, file, student):
-        subjects_str = ';'.join(f"{key}:{value}" for key, value in student['subjects'].items())
+        subjects_str = ';'.join(f"{key}:{value['name']}:{value['marks']}" for key, value in student['subjects'].items())
         file.write(f"{student['id']},{student['name']},{student['email']},{student['password']},{subjects_str}\n")
 
 
@@ -173,7 +173,7 @@ db = Database()
 # db.add_student('asimsantos@gmail.com', 'mypass', 'Asim Santos')
 # db.add_student('teststu@gmail.com', 'testpass', 'Test Student')
 
-db.update_password('110571', 'asimsantos')
+# db.update_password('110571', 'asimsantos')
 
 # db.delete_student('861984')
 
@@ -183,8 +183,8 @@ db.update_password('110571', 'asimsantos')
 
 # print(db.get_all_students())
 
-# db.set_subjects('110571','501','Maths')
-# db.set_subjects('110571','732','Science')
+# db.set_subjects('110571','501','Maths',90)
+# db.set_subjects('853160','732','Science',99)
 
 
 # print(db.get_subjects('110571')) 
