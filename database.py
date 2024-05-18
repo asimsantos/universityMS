@@ -45,18 +45,27 @@ class Database:
             open(self.filename, 'w').close() 
     
     # Adds a new student to the database with a unique six-digit ID
-    def add_student(self, email, password, full_name):
-        students = self.get_all_students()
-        existing_ids = {student['id'] for student in students}
-        while True:
-            random_id = Utils.generate_random_id()
-            if random_id not in existing_ids:
-                student_id = random_id
-                break
+
+    # def add_student(self, email, password, full_name):
+    #     students = self.get_all_students()
+    #     existing_ids = {student['id'] for student in students}
+    #     while True:
+    #         random_id = Utils.generate_random_id()
+    #         if random_id not in existing_ids:
+    #             student_id = random_id
+    #             break
+    #     with open(self.filename, 'a') as file:
+    #         file.write(f"{student_id},{full_name},{email},{password},\n")
+
+    def add_student(self, studentID, name, password, email):
         with open(self.filename, 'a') as file:
-            file.write(f"{student_id},{full_name},{email},{password},\n")
+            file.write(f"{studentID},{name},{email},{password},\n")
+            # file.write(f"{studentID},P{name},{password},{email},\n")
+
+
 
     # Gets all students in the database.
+
     # def get_all_students(self):
     #     students = []
     #     with open(self.filename, 'r') as file:
@@ -84,6 +93,7 @@ class Database:
                 students.append(student)
         return students
     
+
     # Gets a student by ID.
     def get_student_by_id(self, student_id):
         students = self.get_all_students()
@@ -92,17 +102,9 @@ class Database:
                 return student
         return None
 
-    # Updates an existing student's password.
-    def add_student(self, email, password, full_name):
-        students = self.get_all_students()
-        existing_ids = {student['id'] for student in students}
-        while True:
-            random_id = Utils.generate_random_id()
-            if random_id not in existing_ids:
-                student_id = random_id
-                break
-        with open(self.filename, 'a') as file:
-            file.write(f"{student_id},{full_name},{email},{password},\n")
+
+
+    
 
     # Deletes a student from the database.
     def delete_student(self, student_id):
@@ -171,7 +173,7 @@ db = Database()
 # db.add_student('asimsantos@gmail.com', 'mypass', 'Asim Santos')
 # db.add_student('teststu@gmail.com', 'testpass', 'Test Student')
 
-# db.update_password('853160', 'testpass2')
+db.update_password('110571', 'asimsantos')
 
 # db.delete_student('861984')
 
@@ -188,6 +190,15 @@ db = Database()
 # print(db.get_subjects('110571')) 
 # db.remove_subject('110571','501')
 # print(db.get_subjects('110571')) 
+
+# students = db.get_all_students()
+# subject_id = '501'
+# for student in students:
+#     subjects = student['subjects']
+#     if subject_id in subjects:
+#         subject_name = subjects[subject_id]
+
+# print(subject_name)
 
 
 """ 
