@@ -4,6 +4,7 @@ from student import Student
 class Admin:
     def __init__(self):
         self.db = Database()
+        self.stu = Student()
 
     #checked
     def viewAllStudents(self):
@@ -12,90 +13,105 @@ class Admin:
             if students:
                 for student in students:
                     print('    '+student['name']+' :: '+student['id']+' --> EMAIL: '+student['email'])
+            else:
+                print('        < Nothing to Display >')
         except Exception as e:
             print("Error: {e}")
 
+    #checked
     def groupStudentsByGrade(self):
         try:
             students = self.db.get_all_students()
+            if not students:                
+                print('        < Nothing to Display >')
+                return
             students_by_grade = {}
             for student in students:
-                # Calculate the average marks
                 total_marks = sum(subject['marks'] for subject in student['subjects'].values())
                 num_subjects = len(student['subjects'])
                 average_marks = total_marks / num_subjects
-                
-                # Get the grade based on the average marks
-                grade = get_grade(average_marks)
-                
-                # Add the student to the corresponding grade category
+                grade = self.stu.getGrade(average_marks)
                 if grade not in students_by_grade:
                     students_by_grade[grade] = []
                 students_by_grade[grade].append(student)
-
-            # Print students grouped by their grade
-            for grade, students_in_grade in students_by_grade.items():
-                print(f"Grade: {grade}")
-                for student in students_in_grade:
-                    print(f"  ID: {student['id']}, Name: {student['name']}, Email: {student['email']}, Average Marks: {sum(subject['marks'] for subject in student['subjects'].values()) / len(student['subjects'])}")
-                print()  # Add an empty line for better readability
-            for subject_id, subject_info in subjects.items():
-                marks = subject_info['marks']
-                print('        [ Subject::'+subject_id+' -- marks = '+str(marks)+' -- grade =  '+self.getGrade(marks)+' ]')
+            grade_order = ["HD", "D", "C", "P", "Z"]
+            for grade in grade_order:
+                if grade in students_by_grade:
+                    print('    '+grade,end=' --> [')
+                    student_list = []
+                    for student in students_by_grade[grade]:
+                        average_marks = sum(subject['marks'] for subject in student['subjects'].values()) / len(student['subjects'])
+                        student_list.append(f"{student['name']} :: {student['id']} --> GRADE: {grade} - MARK: {average_marks}")
+                    print(', '.join(student_list), end='')
+                    print(']')
         except Exception as e:
             print(f"Error: {e}")
 
+
+    #checked
     def partitionStudentsByPassFail(self):
         try:
             students = self.db.get_all_students()
-            if students:
-                pass_students = []
-                fail_students = []
-                for student in students:
-                    if student['average_mark'] >= 50:
-                        pass_students.append(student)
-                    else:
-                        fail_students.append(student)
-                
-                print("Students Partitioned by Pass/Fail:")
-                print("-----------------------------------")
-                print("Pass:")
-                for student in pass_students:
-                    print(f"Student ID: {student['id']}, Name: {student['name']}, Email: {student['email']}")
-                print("\nFail:")
-                for student in fail_students:
-                    print(f"Student ID: {student['id']}, Name: {student['name']}, Email: {student['email']}")
-            else:
-                print("No students found.")
-        except Exception as e:
-            print(f"Error: {e}")
+            pass_students = []
+            fail_students = []            
+            for student in students:
+                total_marks = sum(subject['marks'] for subject in student['subjects'].values())
+                num_subjects = len(student['subjects'])
+                average_marks = total_marks / num_subjects
+                grade = self.stu.getGrade(average_marks)                
+                if grade == "Z":
+                    fail_students.append(student)
+                else:
+                    pass_students.append(student)
+            
+            print('    FAIL --> [', end='')
+            for i, student in enumerate(fail_students):
+                average_marks = sum(subject['marks'] for subject in student['subjects'].values()) / len(student['subjects'])
+                print(f"{student['name']} :: {student['id']} --> GRADE: Z - MARK: {average_marks}", end='')
+                if i < len(fail_students) - 1:
+                    print(', ', end='')
+            print(']')
 
-    def removeStudent(self, student_id):
+            # Print Pass students
+            print('    PASS --> [', end='')
+            for i, student in enumerate(pass_students):
+                average_marks = sum(subject['marks'] for subject in student['subjects'].values()) / len(student['subjects'])
+                grade = self.stu.getGrade(average_marks)
+                print(f"{student['name']} :: {student['id']} --> GRADE: {grade} - MARK: {average_marks}", end='')
+                if i < len(pass_students) - 1:
+                    print(', ', end='')
+            print(']')
+        
+        except Exception as e:
+            print(f"Error: {e}")\
+
+    #checked
+    def removeStudent(self):
         try:
-            if self.db.delete_student(student_id):
-                print(f"Student with ID {student_id} has been removed successfully.")
+            id= input('    Remove by ID: ')
+            flag=self.db.delete_student(id)
+            if flag:
+                Utils.print_yellow(f'    Removing Student {id} Account')
             else:
-                print(f"Student with ID {student_id} not found.")
+                Utils.print_red(f'    Student {id} does not exist')
         except Exception as e:
             print(f"Error: {e}")
 
     def clearAllData(self):
         try:
-            confirmation = input("Are you sure you want to clear all data? This action cannot be undone. (yes/no): ")
-            if confirmation.lower() == 'yes':
+            confirmation = input("\033[91m    Are you sure you want to clear the database (Y)ES/(N)O: \033[0m")
+            if confirmation.lower() == 'y':
                 self.db.clear_students_data()
-                print("All data cleared successfully.")
-            else:
-                print("Clear operation aborted.")
+                Utils.print_yellow('    Student data cleared')
         except Exception as e:
             print(f"Error: {e}")
 
             
 
-db = Database()
-admin = Admin()
+# db = Database()
+# admin = Admin()
 # admin.viewAllStudents()
-admin.groupStudentsByGrade()
+# admin.groupStudentsByGrade()
 # admin.partitionStudentsByPassFail()
-# admin.removeStudent("853160")
+# admin.removeStudent()
 # admin.clearAllData()

@@ -47,65 +47,83 @@ class Database:
     # checked
     # Adds a new student to the database with a unique six-digit ID 
     def add_student(self, studentID, name, email, password):
-        with open(self.filename, 'a') as file:
-            file.write(f"{studentID},{name},{email},{password},\n")
+        try:
+            with open(self.filename, 'a') as file:
+                file.write(f"{studentID},{name},{email},{password},\n")
+        except Exception as e:
+            print("Error:", e)
 
 
     # checked
     # Gets all students in the database.
     def get_all_students(self):
-        students = []
-        with open(self.filename, 'r') as file:
-            lines = file.readlines()
-            for line in lines:
-                parts = line.strip().split(',')
-                if len(parts) < 4:
-                    continue
-                student = {
-                    'id': parts[0],
-                    'name': parts[1],
-                    'email': parts[2],
-                    'password': parts[3],
-                    'subjects': {item.split(':')[0]: {'name': item.split(':')[1], 'marks': int(item.split(':')[2])} for item in parts[4].split(';') if item}
-                }
-                students.append(student)
-        return students
+        try:
+            students = []
+            with open(self.filename, 'r') as file:
+                lines = file.readlines()
+                for line in lines:
+                    parts = line.strip().split(',')
+                    if len(parts) < 4:
+                        continue
+                    student = {
+                        'id': parts[0],
+                        'name': parts[1],
+                        'email': parts[2],
+                        'password': parts[3],
+                        'subjects': {item.split(':')[0]: {'name': item.split(':')[1], 'marks': int(item.split(':')[2])} for item in parts[4].split(';') if item}
+                    }
+                    students.append(student)
+            return students
+        except Exception as e:
+            print("Error:", e)
     
 
     # Gets a student by ID.
     def get_student_by_id(self, student_id):
-        students = self.get_all_students()
-        for student in students:
-            if student['id'] == student_id:
-                return student
-        return None
+        try:
+            students = self.get_all_students()
+            for student in students:
+                if student['id'] == student_id:
+                    return student
+            return None
+        except Exception as e:
+            print("Error:", e)
 
 
     # Deletes a student from the database.
     def delete_student(self, student_id):
-        students = self.get_all_students()
-        with open(self.filename, 'w') as file:
-            for student in students:
-                if student['id'] != student_id:
-                    self.write_student(file, student)
-        return len(students) > len(self.get_all_students())
+        try: 
+            students = self.get_all_students()
+            with open(self.filename, 'w') as file:
+                for student in students:
+                    if student['id'] != student_id:
+                        self.write_student(file, student)
+            return len(students) > len(self.get_all_students())
+        except Exception as e:
+            print("Error:", e)
 
     # Deletes all student from the database.
     def clear_students_data(self):
-        open(self.filename, 'w').close()
+        try:
+            open(self.filename, 'w').close()
+        except Exception as e:
+            print("Error:", e)
 
     # need to test
     # Updates an existing student's password.
     def update_password(self, student_id, new_pw):
-        students = self.get_all_students()
-        updated = False
-        with open(self.filename, 'w') as file:
-            for student in students:
-                if student['id'] == student_id:
-                    student['password'] = new_pw
-                    updated = True
-                self.write_student(file, student)
-        return updated
+        try:
+            students = self.get_all_students()
+            updated = False
+            with open(self.filename, 'w') as file:
+                for student in students:
+                    if student['id'] == student_id:
+                        student['password'] = new_pw
+                        updated = True
+                    self.write_student(file, student)
+            return updated
+        except Exception as e:
+            print("Error:", e)
                     
     # Adds subjects to the student's records
     def set_subjects(self, student_id, subject_id, subject_name, marks):
@@ -121,20 +139,26 @@ class Database:
     
     # Gets all the subjects a student is enrolled to
     def get_subjects(self, student_id):
-        student = self.get_student_by_id(student_id)
-        return student['subjects'] if student else None
+        try:
+            student = self.get_student_by_id(student_id)
+            return student['subjects'] if student else None
+        except Exception as e:
+            print("Error:", e)
 
     # Removes a subject(by ID) from the student's records
     def remove_subject(self, student_id, subject_id):
-        students = self.get_all_students()
-        updated = False
-        with open(self.filename, 'w') as file:
-            for student in students:
-                if student['id'] == student_id and subject_id in student['subjects']:
-                    del student['subjects'][subject_id]
-                    updated = True
-                self.write_student(file, student)
-        return updated
+        try:
+            students = self.get_all_students()
+            updated = False
+            with open(self.filename, 'w') as file:
+                for student in students:
+                    if student['id'] == student_id and subject_id in student['subjects']:
+                        del student['subjects'][subject_id]
+                        updated = True
+                    self.write_student(file, student)
+            return updated
+        except Exception as e:
+            print("Error:", e)
 
     # Helper function to write into the student.data in a uniform layout
     def write_student(self, file, student):
