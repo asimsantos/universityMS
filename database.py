@@ -45,18 +45,6 @@ class Database:
             open(self.filename, 'w').close() 
     
     # Adds a new student to the database with a unique six-digit ID
-
-    # def add_student(self, email, password, full_name):
-    #     students = self.get_all_students()
-    #     existing_ids = {student['id'] for student in students}
-    #     while True:
-    #         random_id = Utils.generate_random_id()
-    #         if random_id not in existing_ids:
-    #             student_id = random_id
-    #             break
-    #     with open(self.filename, 'a') as file:
-    #         file.write(f"{student_id},{full_name},{email},{password},\n")
-
     def add_student(self, studentID, name, password, email):
         with open(self.filename, 'a') as file:
             file.write(f"{studentID},{name},{email},{password},\n")
@@ -65,16 +53,6 @@ class Database:
 
 
     # Gets all students in the database.
-
-    # def get_all_students(self):
-    #     students = []
-    #     with open(self.filename, 'r') as file:
-    #         lines = file.readlines()
-    #         for line in lines:
-    #             student_id, full_name, email, password = line.strip().split(',')
-    #             students.append({'id': parts[0], 'name': parts[1], 'email': parts[2], 'password': password})
-    #     return students
-
     def get_all_students(self):
         students = []
         with open(self.filename, 'r') as file:
@@ -102,9 +80,6 @@ class Database:
                 return student
         return None
 
-
-
-    
 
     # Deletes a student from the database.
     def delete_student(self, student_id):
@@ -186,22 +161,3 @@ db = Database()
 # db.set_subjects('110571','501','Maths',90)
 # db.set_subjects('853160','732','Science',99)
 
-
-# print(db.get_subjects('110571')) 
-# db.remove_subject('110571','501')
-# print(db.get_subjects('110571')) 
-
-# students = db.get_all_students()
-# subject_id = '501'
-# for student in students:
-#     subjects = student['subjects']
-#     if subject_id in subjects:
-#         subject_name = subjects[subject_id]
-
-# print(subject_name)
-
-
-""" 
-Sample data
-110571,Asim Santos,asimsantos@gmail.com,mypass,732:Science
-"""
