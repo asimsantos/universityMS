@@ -52,4 +52,3 @@ sub = Subjects()
 # sub.enroll_subject('110571')
 
 # sub.drop_subject('110571', '540')
-

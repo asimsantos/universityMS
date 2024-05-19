@@ -160,4 +160,3 @@ db = Database()
 
 # db.set_subjects('110571','501','Maths',90)
 # db.set_subjects('853160','732','Science',99)
-
