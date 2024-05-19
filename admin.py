@@ -1,43 +1,47 @@
 from database import Database
-
+from utils import Utils
+from student import Student
 class Admin:
-    def __init__(self, db):
-        self.db = db
+    def __init__(self):
+        self.db = Database()
 
+    #checked
     def viewAllStudents(self):
         try:
             students = self.db.get_all_students()
             if students:
-                print("List of All Students:")
-                print("---------------------")
                 for student in students:
-                    print(f"Student ID: {student['id']}, Name: {student['name']}, Email: {student['email']}")
-            else:
-                print("No students found.")
+                    print('    '+student['name']+' :: '+student['id']+' --> EMAIL: '+student['email'])
         except Exception as e:
-            print(f"Error: {e}")
+            print("Error: {e}")
 
     def groupStudentsByGrade(self):
         try:
             students = self.db.get_all_students()
-            if students:
-                grades = {}
-                for student in students:
-                    grade = student['grade']
-                    if grade not in grades:
-                        grades[grade] = []
-                    grades[grade].append(student)
+            students_by_grade = {}
+            for student in students:
+                # Calculate the average marks
+                total_marks = sum(subject['marks'] for subject in student['subjects'].values())
+                num_subjects = len(student['subjects'])
+                average_marks = total_marks / num_subjects
                 
-                print("Students Grouped by Grade:")
-                print("---------------------------")
-                for grade, students in grades.items():
-                    print(f"Grade: {grade}")
-                    print("--------------------")
-                    for student in students:
-                        print(f"Student ID: {student['id']}, Name: {student['name']}, Email: {student['email']}")
-                    print()
-            else:
-                print("No students found.")
+                # Get the grade based on the average marks
+                grade = get_grade(average_marks)
+                
+                # Add the student to the corresponding grade category
+                if grade not in students_by_grade:
+                    students_by_grade[grade] = []
+                students_by_grade[grade].append(student)
+
+            # Print students grouped by their grade
+            for grade, students_in_grade in students_by_grade.items():
+                print(f"Grade: {grade}")
+                for student in students_in_grade:
+                    print(f"  ID: {student['id']}, Name: {student['name']}, Email: {student['email']}, Average Marks: {sum(subject['marks'] for subject in student['subjects'].values()) / len(student['subjects'])}")
+                print()  # Add an empty line for better readability
+            for subject_id, subject_info in subjects.items():
+                marks = subject_info['marks']
+                print('        [ Subject::'+subject_id+' -- marks = '+str(marks)+' -- grade =  '+self.getGrade(marks)+' ]')
         except Exception as e:
             print(f"Error: {e}")
 
@@ -89,9 +93,9 @@ class Admin:
             
 
 db = Database()
-admin = Admin(db)
-admin.viewAllStudents()
+admin = Admin()
+# admin.viewAllStudents()
 admin.groupStudentsByGrade()
-admin.partitionStudentsByPassFail()
+# admin.partitionStudentsByPassFail()
 # admin.removeStudent("853160")
 # admin.clearAllData()

@@ -44,14 +44,14 @@ class Database:
         except FileNotFoundError:
             open(self.filename, 'w').close() 
     
-    # Adds a new student to the database with a unique six-digit ID
-    def add_student(self, studentID, name, password, email):
+    # checked
+    # Adds a new student to the database with a unique six-digit ID 
+    def add_student(self, studentID, name, email, password):
         with open(self.filename, 'a') as file:
             file.write(f"{studentID},{name},{email},{password},\n")
-            # file.write(f"{studentID},P{name},{password},{email},\n")
 
 
-
+    # checked
     # Gets all students in the database.
     def get_all_students(self):
         students = []
@@ -94,7 +94,7 @@ class Database:
     def clear_students_data(self):
         open(self.filename, 'w').close()
 
-
+    # need to test
     # Updates an existing student's password.
     def update_password(self, student_id, new_pw):
         students = self.get_all_students()
@@ -143,7 +143,7 @@ class Database:
 
 
 # Testing
-db = Database()
+# db = Database()
 
 # db.add_student('asimsantos@gmail.com', 'mypass', 'Asim Santos')
 # db.add_student('teststu@gmail.com', 'testpass', 'Test Student')
@@ -155,6 +155,8 @@ db = Database()
 # db.clear_students_data()
 
 # print(db.get_student_by_id('110571'))
+
+# print(db.get_subjects('957916'))
 
 # print(db.get_all_students())
 
