@@ -1,7 +1,6 @@
 from utils import Utils
 from database import Database
 import re
-
 class Student:
     def __init__(self, StudentID, Name, Password,  Email):
         self.Name = Name
@@ -19,7 +18,7 @@ class Student:
         return True  
 
     def viewEnrolment(self):
-        
+        print('fsaffd')
         return []  
 
     def changePassword(self, oldPass, newPass):
