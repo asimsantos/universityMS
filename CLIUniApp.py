@@ -15,21 +15,24 @@ class CLIUniApp:
         while(1):
             opMain= input("\033[94mUniversity System: (A)dmin, (S)tudent, or X : \033[0m")
             if opMain == 'A' or opMain == 'a':
-                opAdmin= input("\033[94m    Admin System: (c/g/p/r/s/x): \033[0m")
-                if opAdmin == 'c':
-                    pass
-                elif opAdmin == 'g':
-                    Utils.print_yellow('    Grade Grouping')
-                    self.ad.viewAllStudents()
-                elif opAdmin == 'p':
-                    pass
-                elif opAdmin == 'r':
-                    pass
-                elif opAdmin == 's':
-                    Utils.print_yellow('    Student List')
-                    self.ad.viewAllStudents()
-                else:
-                    pass 
+                while 1:
+                    opAdmin= input("\033[94m    Admin System: (c/g/p/r/s/x): \033[0m")
+                    if opAdmin == 'c':                        
+                        Utils.print_yellow('    Clearing student database')
+                        self.ad.clearAllData()
+                    elif opAdmin == 'g':
+                        Utils.print_yellow('    Grade Grouping')
+                        self.ad.groupStudentsByGrade()
+                    elif opAdmin == 'p':
+                        Utils.print_yellow('    PASS/FAIL Partition')
+                        self.ad.partitionStudentsByPassFail()
+                    elif opAdmin == 'r':
+                        self.ad.removeStudent()
+                    elif opAdmin == 's':
+                        Utils.print_yellow('    Student List')
+                        self.ad.viewAllStudents()
+                    else:
+                        break 
                 
             elif opMain == 'S' or opMain =='s':
                 while 1:
