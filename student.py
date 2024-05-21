@@ -144,7 +144,7 @@ class Student:
 
     # checked
     def validatePassword(self, password):
-        password_pattern = r"^[A-Z][a-zA-Z]{4,}[0-9]{3,}$"
+        password_pattern = r"^[A-Z][a-zA-Z]{5,}[0-9]{3,}$"
         if re.match(password_pattern, password):
             return True
         else:
