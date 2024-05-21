@@ -31,7 +31,7 @@ class Subjects:
             else:
                 available_courses= self.subjects
             subject_to_enroll = random.choice(available_courses)
-            self.db.set_subjects(student_id, subject_to_enroll['id'], subject_to_enroll['name'], random.randint(0, 100))
+            self.db.set_subjects(student_id, subject_to_enroll['id'], subject_to_enroll['name'], random.randint(25, 100))
             Utils.print_yellow('        Enrolling in Subject-'+subject_to_enroll['id'])
             if enrolled_subjects:
                 c=len(enrolled_subjects)+1

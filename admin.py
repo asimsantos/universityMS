@@ -29,6 +29,8 @@ class Admin:
             for student in students:
                 total_marks = sum(subject['marks'] for subject in student['subjects'].values())
                 num_subjects = len(student['subjects'])
+                if num_subjects==0:
+                    continue
                 average_marks = total_marks / num_subjects
                 grade = self.stu.getGrade(average_marks)
                 if grade not in students_by_grade:
@@ -57,6 +59,8 @@ class Admin:
             for student in students:
                 total_marks = sum(subject['marks'] for subject in student['subjects'].values())
                 num_subjects = len(student['subjects'])
+                if num_subjects==0:
+                    continue
                 average_marks = total_marks / num_subjects
                 grade = self.stu.getGrade(average_marks)                
                 if grade == "Z":
