@@ -61,7 +61,7 @@ class GUIUniApp:
         self.master.withdraw()  # Hide the main window
         self.enrollment_window = tk.Toplevel(self.master)
         self.enrollment_window.title("Enrollment")
-        self.enrollment_window.geometry("500x500")
+        self.enrollment_window.geometry("600x600")
         self.enrollment_window.configure(bg='light green')
 
         tk.Label(self.enrollment_window, text="Currently Enrolled", font=self.heading_font, bg='light green').pack()
